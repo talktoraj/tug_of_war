@@ -7,7 +7,14 @@ import GameRoom from "./components/GameRoom.jsx";
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5174";
 
 export default function App() {
-  const socket = useMemo(() => io(SERVER_URL, { autoConnect: true }), []);
+  const socket = useMemo(
+    () =>
+      io(SERVER_URL, {
+        autoConnect: true,
+        transports: ["websocket", "polling"]
+      }),
+    []
+  );
   const [connected, setConnected] = useState(socket.connected);
   const [phase, setPhase] = useState("lobby");
   const [roomState, setRoomState] = useState(null);
