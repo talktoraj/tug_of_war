@@ -1,0 +1,154 @@
+.bgScene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bgScene * {
+  box-sizing: border-box;
+}
+
+.bgScene input {
+  display: none;
+}
+
+.bgScene sky,
+.bgScene time,
+.bgScene sun,
+.bgScene stars,
+.bgScene stars i,
+.bgScene sunset,
+.bgScene colour,
+.bgScene island {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.bgScene sky {
+  width: 100%;
+  height: 78.5rem;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bgScene sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#323248 10%, #fbd447, #d8480f);
+  opacity: 0.9;
+}
+
+.bgScene time {
+  pointer-events: none;
+  width: 170rem;
+  height: 170rem;
+  left: -100%;
+  right: -100%;
+  top: -100%;
+  bottom: -170%;
+  margin: auto;
+}
+
+.bgScene time sun {
+  width: 170rem;
+  height: 170rem;
+  left: -100%;
+  right: -100%;
+  top: -100%;
+  bottom: -100%;
+  margin: auto;
+  filter: blur(1rem) brightness(240%);
+  animation: bgSun 60s linear infinite;
+}
+
+.bgScene time sun::before {
+  content: "";
+  position: absolute;
+  width: 25rem;
+  height: 25rem;
+  border-radius: 50%;
+  background: radial-gradient(#ffb703, #ff6d00);
+  right: 0;
+  left: 0;
+  top: auto;
+  bottom: 0;
+  margin: auto;
+}
+
+@keyframes bgSun {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.bgScene stars {
+  width: 220rem;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.bgScene stars::before {
+  content: "";
+  position: absolute;
+  top: 5rem;
+  left: 5rem;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    12vw 10vh 0 rgba(255, 255, 255, 0.7),
+    24vw 32vh 0 rgba(255, 255, 255, 0.75),
+    36vw 18vh 0 rgba(255, 255, 255, 0.55),
+    52vw 26vh 0 rgba(255, 255, 255, 0.7),
+    68vw 14vh 0 rgba(255, 255, 255, 0.65),
+    76vw 36vh 0 rgba(255, 255, 255, 0.6),
+    88vw 20vh 0 rgba(255, 255, 255, 0.7),
+    94vw 34vh 0 rgba(255, 255, 255, 0.6);
+}
+
+.bgScene sunset {
+  width: 150%;
+  height: 20rem;
+  left: -25%;
+  top: 60rem;
+  background: radial-gradient(farthest-side at 70% 100%, #ff6400, rgba(255,255,255,0));
+  filter: blur(1rem);
+  opacity: 0.5;
+}
+
+.bgScene colour {
+  width: 100%;
+  height: 100%;
+}
+
+.bgScene island {
+  position: absolute;
+  top: 70vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rem;
+  height: 5rem;
+  background: rgba(96, 139, 136, 0.55);
+  border-radius: 55% 55% 45% 45%;
+  filter: blur(0.2rem);
+}
+
+@media (max-width: 500px) {
+  .bgScene time {
+    display: none;
+  }
+}
