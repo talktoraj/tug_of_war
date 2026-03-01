@@ -4,7 +4,10 @@ import cors from "cors";
 import { Server } from "socket.io";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "*";
+const CLIENT_ORIGIN_RAW = process.env.CLIENT_ORIGIN || "*";
+const CLIENT_ORIGIN = CLIENT_ORIGIN_RAW.includes(",")
+  ? CLIENT_ORIGIN_RAW.split(",").map((s) => s.trim()).filter(Boolean)
+  : CLIENT_ORIGIN_RAW;
 
 const app = express();
 app.use(
@@ -15,7 +18,11 @@ app.use(
 );
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+  res.json({
+    ok: true,
+    port: PORT,
+    clientOrigin: CLIENT_ORIGIN_RAW
+  });
 });
 
 const httpServer = http.createServer(app);

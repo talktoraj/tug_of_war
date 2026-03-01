@@ -13,7 +13,8 @@ export default function App() {
     () =>
       io(SERVER_URL, {
         autoConnect: true,
-        transports: ["websocket", "polling"]
+        transports: ["websocket", "polling"],
+        withCredentials: false
       }),
     []
   );
@@ -23,6 +24,9 @@ export default function App() {
   const [createdRoomId, setCreatedRoomId] = useState(null);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log("Socket SERVER_URL:", SERVER_URL);
+
     const onConnect = () => setConnected(true);
     const onDisconnect = () => setConnected(false);
     const onState = (state) => {
