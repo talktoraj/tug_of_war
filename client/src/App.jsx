@@ -34,6 +34,8 @@ export default function App() {
       setPhase("game");
     };
     const onError = (msg) => {
+      // eslint-disable-next-line no-console
+      console.log("socket_error_message", msg);
       alert(msg);
     };
     const onRoomCreated = ({ roomId }) => {
@@ -62,8 +64,23 @@ export default function App() {
         <Lobby
           connected={connected}
           createdRoomId={createdRoomId}
-          onCreateRoom={(name, avatar) => socket.emit("create_room", { name, avatar })}
-          onJoinRoom={(roomId, name, avatar) => socket.emit("join_room", { roomId, name, avatar })}
+          onCreateRoom={(name, avatar) => {
+            // eslint-disable-next-line no-console
+            console.log("emit_create_room", {
+              nameLen: String(name || "").length,
+              avatarLen: avatar ? String(avatar).length : 0
+            });
+            socket.emit("create_room", { name, avatar });
+          }}
+          onJoinRoom={(roomId, name, avatar) => {
+            // eslint-disable-next-line no-console
+            console.log("emit_join_room", {
+              roomId,
+              nameLen: String(name || "").length,
+              avatarLen: avatar ? String(avatar).length : 0
+            });
+            socket.emit("join_room", { roomId, name, avatar });
+          }}
         />
       ) : (
         <GameRoom

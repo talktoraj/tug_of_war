@@ -195,7 +195,20 @@ function maybeFinish(state) {
 }
 
 io.on("connection", (socket) => {
+  // eslint-disable-next-line no-console
+  console.log("socket_connected", {
+    id: socket.id,
+    origin: socket.handshake.headers?.origin
+  });
+
   socket.on("create_room", (payload) => {
+    // eslint-disable-next-line no-console
+    console.log("create_room", {
+      socketId: socket.id,
+      hasExistingRoom: Boolean(socket.data.roomId),
+      nameLen: String(payload?.name || "").length,
+      avatarLen: payload?.avatar ? String(payload.avatar).length : 0
+    });
     const existingRoomId = socket.data.roomId;
     if (existingRoomId) return;
 
@@ -208,6 +221,9 @@ io.on("connection", (socket) => {
     const seat = assignSeat(state, socket.id);
     state.players[seat].name = normalizeName(payload?.name) || "Player A";
     state.players[seat].avatar = normalizeAvatar(payload?.avatar);
+
+    // eslint-disable-next-line no-console
+    console.log("room_created", { roomId, seat, socketId: socket.id });
     socket.data.roomId = roomId;
     socket.data.seat = seat;
     socket.join(roomId);
@@ -217,6 +233,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join_room", (payload) => {
+    // eslint-disable-next-line no-console
+    console.log("join_room", {
+      socketId: socket.id,
+      hasExistingRoom: Boolean(socket.data.roomId),
+      roomId: payload?.roomId,
+      nameLen: String(payload?.name || "").length,
+      avatarLen: payload?.avatar ? String(payload.avatar).length : 0
+    });
     const existingRoomId = socket.data.roomId;
     if (existingRoomId) return;
 
@@ -275,6 +299,8 @@ io.on("connection", (socket) => {
     state.offset += seat === "A" ? -1 : 1;
 
     if (maybeFinish(state)) {
+      // eslint-disable-next-line no-console
+      console.log("match_finished", { roomId, winner: state.winner, offset: state.offset });
       io.to(roomId).emit("state", publicState(state, seat));
       return;
     }
@@ -289,6 +315,8 @@ io.on("connection", (socket) => {
     if (!state) return;
 
     resetMatch(state);
+    // eslint-disable-next-line no-console
+    console.log("match_restart", { roomId });
     io.to(roomId).emit("state", publicState(state, socket.data.seat));
 
     if (state.status === "countdown") {
@@ -297,8 +325,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    // eslint-disable-next-line no-console
+    console.log("socket_disconnected", { id: socket.id, roomId: socket.data.roomId });
     const roomId = socket.data.roomId;
-    if (!roomId) return;
+    const seat = socket.data.seat;
+    if (!roomId || !seat) return;
     const state = rooms.get(roomId);
     if (!state) return;
 
