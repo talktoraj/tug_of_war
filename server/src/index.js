@@ -63,6 +63,16 @@ function makeRoomState(roomId) {
   };
 }
 
+function emitStateToRoom(roomId, state) {
+  io.to(roomId).emit("state", publicState(state, null));
+  if (state.players.A.socketId) {
+    io.to(state.players.A.socketId).emit("state", publicState(state, "A"));
+  }
+  if (state.players.B.socketId) {
+    io.to(state.players.B.socketId).emit("state", publicState(state, "B"));
+  }
+}
+
 function publicState(state, seat) {
   return {
     roomId: state.roomId,
@@ -149,7 +159,7 @@ function startCountdown(roomId, state, seat) {
   if (!bothPlayersConnected(state)) return;
   state.status = "countdown";
   state.countdown = 3;
-  io.to(roomId).emit("state", publicState(state, seat));
+  emitStateToRoom(roomId, state);
 
   const interval = setInterval(() => {
     const current = rooms.get(roomId);
@@ -165,11 +175,11 @@ function startCountdown(roomId, state, seat) {
     if (current.countdown <= 0) {
       current.countdown = null;
       current.status = "playing";
-      io.to(roomId).emit("state", publicState(current, seat));
+      emitStateToRoom(roomId, current);
       clearInterval(interval);
       return;
     }
-    io.to(roomId).emit("state", publicState(current, seat));
+    emitStateToRoom(roomId, current);
   }, 1000);
 }
 
@@ -210,10 +220,13 @@ io.on("connection", (socket) => {
       avatarLen: payload?.avatar ? String(payload.avatar).length : 0
     });
     const existingRoomId = socket.data.roomId;
-    if (existingRoomId) return;
+    if (existingRoomId) {
+      socket.emit("error_message", "You are already in a room");
+      return;
+    }
 
-    let roomId = generateRoomId();
-    while (rooms.has(roomId)) roomId = generateRoomId();
+    let roomId = normalizeRoomId(generateRoomId());
+    while (rooms.has(roomId)) roomId = normalizeRoomId(generateRoomId());
 
     const state = makeRoomState(roomId);
     rooms.set(roomId, state);
@@ -229,7 +242,7 @@ io.on("connection", (socket) => {
     socket.join(roomId);
 
     socket.emit("room_created", { roomId });
-    io.to(roomId).emit("state", publicState(state, seat));
+    emitStateToRoom(roomId, state);
   });
 
   socket.on("join_room", (payload) => {
@@ -242,7 +255,10 @@ io.on("connection", (socket) => {
       avatarLen: payload?.avatar ? String(payload.avatar).length : 0
     });
     const existingRoomId = socket.data.roomId;
-    if (existingRoomId) return;
+    if (existingRoomId) {
+      socket.emit("error_message", "You are already in a room");
+      return;
+    }
 
     const roomId = normalizeRoomId(payload?.roomId);
     if (!roomId) {
@@ -271,7 +287,7 @@ io.on("connection", (socket) => {
     socket.data.seat = seat;
     socket.join(roomId);
 
-    io.to(roomId).emit("state", publicState(state, seat));
+    emitStateToRoom(roomId, state);
 
     if (bothPlayersConnected(state)) {
       startCountdown(roomId, state, seat);
@@ -301,11 +317,11 @@ io.on("connection", (socket) => {
     if (maybeFinish(state)) {
       // eslint-disable-next-line no-console
       console.log("match_finished", { roomId, winner: state.winner, offset: state.offset });
-      io.to(roomId).emit("state", publicState(state, seat));
+      emitStateToRoom(roomId, state);
       return;
     }
 
-    io.to(roomId).emit("state", publicState(state, seat));
+    emitStateToRoom(roomId, state);
   });
 
   socket.on("restart", () => {
@@ -317,7 +333,7 @@ io.on("connection", (socket) => {
     resetMatch(state);
     // eslint-disable-next-line no-console
     console.log("match_restart", { roomId });
-    io.to(roomId).emit("state", publicState(state, socket.data.seat));
+    emitStateToRoom(roomId, state);
 
     if (state.status === "countdown") {
       startCountdown(roomId, state);
@@ -339,7 +355,7 @@ io.on("connection", (socket) => {
     state.status = bothPlayersConnected(state) ? state.status : "waiting";
     if (state.status === "waiting") state.countdown = null;
 
-    io.to(roomId).emit("state", publicState(state, socket.data.seat));
+    emitStateToRoom(roomId, state);
 
     const a = state.players.A.socketId;
     const b = state.players.B.socketId;
