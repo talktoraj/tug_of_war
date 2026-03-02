@@ -31,7 +31,9 @@ export default function App() {
     const onDisconnect = () => setConnected(false);
     const onState = (state) => {
       setRoomState(state);
-      setPhase("game");
+      if (state?.yourSeat === "A" || state?.yourSeat === "B") {
+        setPhase("game");
+      }
     };
     const onError = (msg) => {
       // eslint-disable-next-line no-console

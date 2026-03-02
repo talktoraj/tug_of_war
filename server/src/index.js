@@ -2,6 +2,8 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 const CLIENT_ORIGIN_RAW = process.env.CLIENT_ORIGIN || "*";
@@ -361,6 +363,15 @@ io.on("connection", (socket) => {
     const b = state.players.B.socketId;
     if (!a && !b) rooms.delete(roomId);
   });
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, "../../client/dist");
+app.use(express.static(distPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 httpServer.listen(PORT, () => {
