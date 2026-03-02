@@ -22,8 +22,12 @@ export default function WinnerBackground({ winnerName, onRestart }) {
             {/* The Animated Background HTML */}
             <div className="mainCont">
                 <div className="assCheeks">
-                    <div className="leftAssCheek"></div>
-                    <div className="rightAssCheek"></div>
+                    <div className="leftAssCheek">
+                        <span className="cheekText leftText">{winnerName}</span>
+                    </div>
+                    <div className="rightAssCheek">
+                        <span className="cheekText rightText">Winner</span>
+                    </div>
                     <div className="poopCont">
                         <div className="poopBottomPart"></div>
                         <div className="poopMiddlePart"></div>
@@ -35,11 +39,6 @@ export default function WinnerBackground({ winnerName, onRestart }) {
                     <div className="leftLeg"></div>
                     <div className="rightLeg"></div>
                 </div>
-            </div>
-
-            <div className="justAnotherShitLinkCont">
-                Just another experiment of <a href="http://mahdif.com" target="_blank" rel="noreferrer">a watermelon lover</a>
-                &amp; Inspired by <a href="https://twitter.com/banhocheco" target="_blank" rel="noreferrer">João</a>
             </div>
         </div>
     );

@@ -30,10 +30,15 @@
 
 .mainCont {
     width: 100%;
-    height: 100%;
+    max-width: 1000px;
+    height: 80vh;
+    max-height: 800px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .bodyUpperPart {
@@ -199,7 +204,7 @@
 @media screen and (max-width: 1000px) {
     .mainCont {
         width: 94%;
-        height: 700px;
+        height: 70vw;
     }
 
     .justAnotherShitLinkCont,
@@ -210,7 +215,7 @@
 
 @media screen and (max-width: 900px) {
     .mainCont {
-        height: 600px;
+        height: 75vw;
     }
 
     .justAnotherShitLinkCont {
@@ -221,13 +226,13 @@
 
 @media screen and (max-width: 700px) {
     .mainCont {
-        height: 500px;
+        height: 80vw;
     }
 }
 
 @media screen and (max-width: 600px) {
     .mainCont {
-        height: 350px;
+        height: 95vw;
     }
 
     .poopCont {
@@ -237,8 +242,8 @@
 
 @media screen and (max-width: 450px) {
     .poopCont {
-        top: 260px;
-        height: 60px;
+        top: 30vw;
+        height: 12vw;
     }
 }
 
@@ -251,28 +256,41 @@
     height: 100%;
     z-index: 200;
     pointer-events: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 40px;
+    display: none;
+    /* Hide old floating overlay, text is now on cheeks */
 }
 
-.winnerNameText {
-    font-size: 6rem;
+.cheekText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Arial, sans-serif;
     font-weight: 900;
-    color: #fff;
-    text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+    color: #4A3018;
+    /* Dark brown matching the reference image */
+    font-size: clamp(20px, 6vw, 80px);
     text-transform: uppercase;
-    transform: rotate(-10deg);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
 }
 
-.winnerText {
-    font-size: 8rem;
-    font-weight: 900;
-    color: #ffe600;
-    text-shadow: 6px 6px 0 #ff0000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
-    text-transform: uppercase;
-    transform: rotate(10deg);
+.leftText {
+    transform: translate(-50%, -50%) rotate(15deg);
+}
+
+.rightText {
+    transform: translate(-50%, -50%) rotate(-15deg);
+}
+
+.leftAssCheek:hover .leftText {
+    transform: translate(-50%, -50%) rotate(20deg);
+}
+
+.rightAssCheek:hover .rightText {
+    transform: translate(-50%, -50%) rotate(-20deg);
 }
 
 .restartButtonOverlay {
