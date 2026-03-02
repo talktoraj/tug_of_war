@@ -61,6 +61,8 @@ function makeRoomState(roomId) {
     offset: 0,
     status: "waiting", // waiting | countdown | playing | finished
     countdown: null,
+    matchTimer: 30, // 30 seconds for the match
+    timerInterval: null, // Keep track of the interval ID
     winner: null
   };
 }
@@ -80,6 +82,7 @@ function publicState(state, seat) {
     roomId: state.roomId,
     status: state.status,
     countdown: state.countdown,
+    matchTimer: state.matchTimer,
     winner: state.winner,
     winTaps: WIN_TAPS,
     winThreshold: WIN_THRESHOLD,
@@ -147,11 +150,16 @@ function bothPlayersConnected(state) {
 }
 
 function resetMatch(state) {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
   state.players.A.taps = 0;
   state.players.B.taps = 0;
   state.players.A.lastTapAt = 0;
   state.players.B.lastTapAt = 0;
   state.offset = 0;
+  state.matchTimer = 30;
   state.winner = null;
   state.status = bothPlayersConnected(state) ? "countdown" : "waiting";
   state.countdown = state.status === "countdown" ? 3 : null;
@@ -159,18 +167,21 @@ function resetMatch(state) {
 
 function startCountdown(roomId, state, seat) {
   if (!bothPlayersConnected(state)) return;
+
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
+
   state.status = "countdown";
   state.countdown = 3;
+  state.matchTimer = 30;
   emitStateToRoom(roomId, state);
 
-  const interval = setInterval(() => {
+  const countdownInterval = setInterval(() => {
     const current = rooms.get(roomId);
-    if (!current) {
-      clearInterval(interval);
-      return;
-    }
-    if (current.status !== "countdown") {
-      clearInterval(interval);
+    if (!current || current.status !== "countdown") {
+      clearInterval(countdownInterval);
       return;
     }
     current.countdown -= 1;
@@ -178,8 +189,45 @@ function startCountdown(roomId, state, seat) {
       current.countdown = null;
       current.status = "playing";
       emitStateToRoom(roomId, current);
-      clearInterval(interval);
+      clearInterval(countdownInterval);
+
+      // Start the match timer immediately after countdown ends
+      startMatchTimer(roomId, current);
       return;
+    }
+    emitStateToRoom(roomId, current);
+  }, 1000);
+}
+
+function startMatchTimer(roomId, state) {
+  state.timerInterval = setInterval(() => {
+    const current = rooms.get(roomId);
+    if (!current || current.status !== "playing") {
+      if (current && current.timerInterval) {
+        clearInterval(current.timerInterval);
+        current.timerInterval = null;
+      }
+      return;
+    }
+
+    current.matchTimer -= 1;
+    if (current.matchTimer <= 0) {
+      current.matchTimer = 0;
+      clearInterval(current.timerInterval);
+      current.timerInterval = null;
+
+      // Time is up, decide winner based on offset
+      current.status = "finished";
+      if (current.offset < 0) {
+        current.winner = "A";
+      } else if (current.offset > 0) {
+        current.winner = "B";
+      } else {
+        // Handle ties if needed, but for now fallback to offset logic. 
+        // If exact tie, let's just make A win or keep it null.
+        current.winner = null;
+      }
+      console.log("match_finished_by_time", { roomId, winner: current.winner, offset: current.offset });
     }
     emitStateToRoom(roomId, current);
   }, 1000);
@@ -355,13 +403,24 @@ io.on("connection", (socket) => {
     if (state.players.B.socketId === socket.id) state.players.B.socketId = null;
 
     state.status = bothPlayersConnected(state) ? state.status : "waiting";
-    if (state.status === "waiting") state.countdown = null;
+    if (state.status === "waiting") {
+      state.countdown = null;
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
 
     emitStateToRoom(roomId, state);
 
     const a = state.players.A.socketId;
     const b = state.players.B.socketId;
-    if (!a && !b) rooms.delete(roomId);
+    if (!a && !b) {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+      }
+      rooms.delete(roomId);
+    }
   });
 });
 

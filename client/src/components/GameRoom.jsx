@@ -10,9 +10,9 @@ export default function GameRoom({ connected, socket, state }) {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const { shakeKey, tensionKey, effects, onTap, setCustomAudio, setDefaultCustomAudioUrl } =
     useTapJuice({
-    enabled: true,
-    soundEnabled
-  });
+      enabled: true,
+      soundEnabled
+    });
 
   useEffect(() => {
     // If you place ghopghop.mp3 in the client public root, it will be served at /ghopghop.mp3
@@ -103,6 +103,10 @@ export default function GameRoom({ connected, socket, state }) {
             onChange={(e) => onPickTapClip(e.target.files?.[0])}
           />
         </label>
+        <div className="pill" style={{ color: '#fbbf24', fontWeight: 'bold' }}>
+          {state.status === "playing" || state.status === "finished" ?
+            `Time: ${state.matchTimer}s` : "Time: 30s"}
+        </div>
       </div>
 
       <div className="centerArea">
@@ -132,4 +136,3 @@ export default function GameRoom({ connected, socket, state }) {
     </div>
   );
 }
-  
