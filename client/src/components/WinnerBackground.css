@@ -1,0 +1,307 @@
+.winnerBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    color: #222;
+    text-align: center;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.winnerBg * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.25s;
+    outline: none;
+    font: 300 20px 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
+}
+
+.winnerBg a {
+    text-decoration: none;
+}
+
+.winnerBg a:hover {
+    text-decoration: underline;
+}
+
+.mainCont {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.bodyUpperPart {
+    width: 70%;
+    background: #e4b69d;
+    border-left: solid 4px #b08874;
+    border-right: solid 4px #b08874;
+    height: 40%;
+    margin: 0 auto;
+}
+
+.bodyBottomPart {
+    width: 90%;
+    height: 60%;
+    margin: 0 auto 0;
+    font-size: 0;
+}
+
+.leftLeg,
+.rightLeg {
+    width: 38%;
+    background: #e4b69d;
+    border-left: solid 4px #b08874;
+    border-right: solid 4px #b08874;
+    height: 100%;
+    display: inline-block;
+}
+
+.leftLeg {
+    margin: 0 0 0 5%;
+    transform: skewX(8deg);
+    float: left;
+}
+
+.rightLeg {
+    margin: 0 5% 0 0;
+    transform: skewX(-8deg);
+    float: right;
+}
+
+.assCheeks {
+    width: 100%;
+    position: absolute;
+    top: 10%;
+    font-size: 0;
+    text-align: left;
+    z-index: 1;
+}
+
+.leftAssCheek,
+.rightAssCheek {
+    width: 60%;
+    background: #e4b69d;
+    border: solid 6px #b08874;
+    padding-bottom: 50%;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.leftAssCheek {
+    border-top: none;
+    border-right: none;
+    transform: rotate(-20deg);
+    left: 1%;
+}
+
+.rightAssCheek {
+    right: 1%;
+    border-top: none;
+    border-left: none;
+    transform: rotate(20deg);
+}
+
+.leftAssCheek:hover {
+    transform: rotate(-5deg);
+}
+
+.rightAssCheek:hover {
+    transform: rotate(5deg);
+}
+
+.justAnotherShitLinkCont {
+    width: 100%;
+    display: block;
+    background: none;
+    color: #333;
+    font-size: 14px;
+    padding: 15px 0;
+    border-top: solid 2px #b08874;
+    position: absolute;
+    bottom: 0;
+    z-index: 5;
+}
+
+.justAnotherShitLinkCont a {
+    font-size: 14px;
+    color: #0878c0;
+}
+
+.shareButtonsCont {
+    margin: 15px 0;
+}
+
+.twitter-share-button {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.fb-like {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 0;
+}
+
+.poopCont {
+    width: 15%;
+    height: 140px;
+    margin: 0 auto;
+    position: relative;
+    display: block;
+    z-index: 0;
+    top: 25px;
+    opacity: 0;
+}
+
+.poopBottomPart {
+    width: 100%;
+    height: 90%;
+    background: #744C28;
+    border: solid 3px #603813;
+    border-top: none;
+    border-radius: 50%;
+    z-index: 2;
+    position: absolute;
+    top: 10%;
+}
+
+.poopMiddlePart {
+    width: 60%;
+    height: 75%;
+    background: #744C28;
+    border-left: solid 3px #603813;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 3;
+    top: 5%;
+    left: 5%;
+}
+
+.poopUpperPart {
+    width: 70%;
+    height: 50%;
+    background: #744C28;
+    border-right: solid 3px #603813;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 4;
+    right: 5%;
+}
+
+@media screen and (max-width: 1000px) {
+    .mainCont {
+        width: 94%;
+        height: 700px;
+    }
+
+    .justAnotherShitLinkCont,
+    .justAnotherShitLinkCont a {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .mainCont {
+        height: 600px;
+    }
+
+    .justAnotherShitLinkCont {
+        font-size: 11px;
+        padding: 15px 5%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .mainCont {
+        height: 500px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .mainCont {
+        height: 350px;
+    }
+
+    .poopCont {
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .poopCont {
+        top: 260px;
+        height: 60px;
+    }
+}
+
+/* Winner Modal Overlay Styles */
+.winnerOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+
+.winnerNameText {
+    font-size: 6rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+    text-transform: uppercase;
+    transform: rotate(-10deg);
+}
+
+.winnerText {
+    font-size: 8rem;
+    font-weight: 900;
+    color: #ffe600;
+    text-shadow: 6px 6px 0 #ff0000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+    text-transform: uppercase;
+    transform: rotate(10deg);
+}
+
+.restartButtonOverlay {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    pointer-events: auto;
+}
+
+.restartBtn {
+    padding: 20px 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s, background 0.2s;
+}
+
+.restartBtn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.restartBtn:active {
+    transform: translateY(2px);
+}
